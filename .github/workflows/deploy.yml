@@ -24,7 +24,7 @@ jobs:
 
       - name: Inject Secret into JS
         run: |
-          sed -i 's/${API_KEY}/${{ secrets.API_KEY }}/g' js/stock.js
+          sed -i 's/${API_KEY}/${{ secrets.API_KEY }}/g' js/app.js
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
