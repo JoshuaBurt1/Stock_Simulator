@@ -4,50 +4,61 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API Stocks Dashboard</title>
-    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Custom Scrollbar Styles -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- External Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js" defer></script>
     <script src="js/keys.js" defer></script>
     <script src="js/stock.js" defer></script>
   </head>
-  <body>
-    <div class="app-container">
-      <header class="app-header">
-        <h1>API Stocks Dashboard</h1>
-        <p id="studentId"></p>
+  <body class="bg-slate-900 text-slate-100 font-['Inter',sans-serif] min-h-screen p-4 md:p-8">
+    <div class="max-w-[1400px] mx-auto flex flex-col gap-8">
+      <!-- Header -->
+      <header class="text-center py-4">
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">API Stocks Dashboard</h1>
+        <p id="studentId" class="text-slate-400 text-sm mt-1"></p>
       </header>
 
-      <main class="controls-card">
-        <div class="instructions">
+      <!-- Controls Card -->
+      <main class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl flex flex-col gap-5">
+        <div class="text-slate-400 text-sm">
           <p>
-            Search for any stock ticker or select from the <strong>Top 1000 Most Active</strong> list below, then click <strong>Add Stock</strong>.
+            Search for any stock ticker or select from the <strong class="text-indigo-400 font-semibold">Top 1000 Most Active</strong> list below, then click <strong class="text-indigo-400 font-semibold">Add Stock</strong>.
           </p>
         </div>
 
-        <div class="search-bar-group">
+        <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
           <input
             type="text"
             id="stockSearchInput"
             placeholder="Type stock ticker (e.g. AAPL, TSLA, NVDA)..."
             autocomplete="off"
+            class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none focus:border-indigo-500 transition-colors text-sm md:text-base"
           />
-          <button id="addStockBtn" class="btn btn-primary">Add Stock</button>
-          <button id="clear" class="btn btn-secondary">Clear All</button>
+          <button id="addStockBtn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold rounded-lg text-sm transition-all shadow-sm">
+            Add Stock
+          </button>
+          <button id="clear" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-semibold rounded-lg text-sm transition-all shadow-sm">
+            Clear All
+          </button>
         </div>
 
-        <div class="select-group">
-          <label for="stockSelect2">Top 1000 Most Active Stocks:</label>
-          <select id="stockSelect2" size="6">
-            <option value="" disabled>Loading market snapshot data...</option>
+        <div class="flex flex-col gap-2">
+          <label for="stockSelect2" class="font-semibold text-sm text-slate-200">Top 1000 Most Active Stocks:</label>
+          <select id="stockSelect2" size="6" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-sm outline-none focus:border-indigo-500 transition-colors">
+            <option value="" disabled class="p-2">Loading market snapshot data...</option>
           </select>
         </div>
       </main>
 
       <!-- Dynamic Stock Cards Container -->
-      <section id="resultsContainer" class="results-grid"></section>
+      <section id="resultsContainer" class="flex flex-col gap-8"></section>
     </div>
   </body>
 </html>

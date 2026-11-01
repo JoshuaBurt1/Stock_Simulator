@@ -37,7 +37,7 @@ fetch(apiUrlSP)
   })
   .then((data) => {
     if (!data.results || data.results.length === 0) {
-      stockSelect2.innerHTML = `<option disabled>No data available for date ${snapshotDateStr}</option>`;
+      stockSelect2.innerHTML = `<option disabled class="p-2 text-slate-400">No data available for date ${snapshotDateStr}</option>`;
       return;
     }
 
@@ -50,7 +50,7 @@ fetch(apiUrlSP)
   })
   .catch((error) => {
     console.error("Error fetching market data:", error);
-    stockSelect2.innerHTML = `<option disabled>Error loading tickers (Check API Key / Console)</option>`;
+    stockSelect2.innerHTML = `<option disabled class="p-2 text-red-400">Error loading tickers (Check API Key / Console)</option>`;
   });
 
 // Render Tickers inside Select List
@@ -65,6 +65,7 @@ function renderSelectOptions(tickers, filterQuery = "") {
     const option = document.createElement("option");
     option.value = item.T;
     option.id = item.T;
+    option.className = "p-2 rounded mb-0.5 hover:bg-indigo-600 hover:text-white checked:bg-indigo-600 checked:text-white cursor-pointer";
 
     const formattedVol = item.v >= 1_000_000
       ? `${(item.v / 1_000_000).toFixed(2)}M`
@@ -81,7 +82,7 @@ function renderSelectOptions(tickers, filterQuery = "") {
   });
 
   if (filterQuery && stockSelect2.options.length === 0) {
-    stockSelect2.innerHTML = `<option disabled>No active ticker found matching "${filterQuery.toUpperCase()}"</option>`;
+    stockSelect2.innerHTML = `<option disabled class="p-2 text-slate-400">No active ticker found matching "${filterQuery.toUpperCase()}"</option>`;
   }
 }
 
@@ -118,8 +119,8 @@ function submitAddStock() {
     const existingCard = document.querySelector(`[data-symbol="${query}"]`);
     if (existingCard) {
       existingCard.scrollIntoView({ behavior: "smooth", block: "center" });
-      existingCard.style.outline = "2px solid var(--primary)";
-      setTimeout(() => (existingCard.style.outline = "none"), 1500);
+      existingCard.classList.add("ring-2", "ring-indigo-500");
+      setTimeout(() => existingCard.classList.remove("ring-2", "ring-indigo-500"), 1500);
     }
     return;
   }
@@ -187,59 +188,63 @@ function addStockCard(symbol) {
 
   // Outer Card Container
   const stockCard = document.createElement("div");
-  stockCard.className = "stock-card";
+  stockCard.className = "bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl flex flex-col gap-5 relative transition-all duration-300";
   stockCard.id = cardId;
   stockCard.dataset.symbol = symbol;
 
-  // Card Header Row (Ticker Title + Time Selector + "X" Button)
+  // Card Header Row
   const cardHeader = document.createElement("div");
-  cardHeader.className = "stock-card-header";
+  cardHeader.className = "flex flex-wrap justify-between items-center gap-4 border-b border-slate-700 pb-3";
 
   const headerLeft = document.createElement("div");
-  headerLeft.className = "header-left";
+  headerLeft.className = "flex items-center gap-3";
 
   const stockNameHeading = document.createElement("h2");
+  stockNameHeading.className = "text-2xl font-bold text-white tracking-wide";
   stockNameHeading.textContent = symbol;
 
   headerLeft.appendChild(stockNameHeading);
 
   const headerRight = document.createElement("div");
-  headerRight.className = "header-right";
+  headerRight.className = "flex items-center gap-4 flex-wrap";
 
   // Time Frame Selector
   const timeSelector = document.createElement("div");
-  timeSelector.className = "time-frame-selector";
+  timeSelector.className = "inline-flex items-center bg-slate-900 border border-slate-700 rounded-full p-1 gap-1";
 
   const periods = ["24H", "7D", "1M", "3M", "YTD", "1Y", "Max"];
   const defaultPeriod = "1Y";
 
   periods.forEach((period) => {
     const btn = document.createElement("button");
-    btn.className = `time-btn ${period === defaultPeriod ? "active" : ""}`;
+    const isActive = period === defaultPeriod;
+    btn.className = `time-btn text-xs font-semibold px-3 py-1.5 rounded-full transition-all cursor-pointer ${
+      isActive ? "bg-white text-indigo-600 shadow" : "bg-transparent text-slate-400 hover:text-slate-100"
+    }`;
     btn.textContent = period;
     btn.dataset.period = period;
     timeSelector.appendChild(btn);
   });
 
   const divider = document.createElement("div");
-  divider.className = "time-divider";
+  divider.className = "w-[1px] h-4 bg-slate-700 mx-1";
   timeSelector.appendChild(divider);
 
   const calBtn = document.createElement("button");
-  calBtn.className = "time-btn icon-btn";
+  calBtn.className = "p-1.5 text-slate-400 hover:text-slate-100 rounded-full transition-all flex items-center justify-center";
   calBtn.innerHTML = `
-    <svg viewBox="0 0 24 24">
+    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
       <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
     </svg>
   `;
   timeSelector.appendChild(calBtn);
 
-  // "X" Delete Card Button
+  // Delete Card Button
   const deleteBtn = document.createElement("button");
-  deleteBtn.className = "delete-card-btn";
+  deleteBtn.className = "p-2 text-slate-400 hover:text-white bg-transparent hover:bg-red-600 border border-transparent hover:border-red-600 rounded-lg transition-all flex items-center justify-center cursor-pointer";
   deleteBtn.title = "Remove Ticker";
   deleteBtn.innerHTML = `
-    <svg viewBox="0 0 24 24">
+    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
     </svg>
   `;
@@ -262,19 +267,22 @@ function addStockCard(symbol) {
 
   // Card Body Grid
   const cardBody = document.createElement("div");
-  cardBody.className = "stock-card-body";
+  cardBody.className = "grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-6";
 
   // Table Wrapper
   const tableWrapper = document.createElement("div");
-  tableWrapper.className = "table-wrapper";
+  tableWrapper.className = "max-h-[380px] overflow-y-auto border border-slate-700 rounded-lg bg-slate-900";
 
   const table = document.createElement("table");
-  table.className = "stock-table";
+  table.className = "w-full text-left text-xs md:text-sm border-collapse";
 
   const thead = document.createElement("thead");
+  thead.className = "sticky top-0 bg-slate-800 text-slate-400 font-semibold uppercase text-[11px] tracking-wider z-10 border-b border-slate-700";
+
   const tr = document.createElement("tr");
   ["Date", "Open", "Close", "High", "Low"].forEach((text) => {
     const th = document.createElement("th");
+    th.className = "px-4 py-3";
     th.textContent = text;
     tr.appendChild(th);
   });
@@ -287,7 +295,7 @@ function addStockCard(symbol) {
 
   // Chart Wrapper
   const chartWrapper = document.createElement("div");
-  chartWrapper.className = "chart-wrapper";
+  chartWrapper.className = "relative h-[380px] w-full bg-slate-900 border border-slate-700 rounded-lg p-4";
 
   const canvas = document.createElement("canvas");
   chartWrapper.appendChild(canvas);
@@ -396,11 +404,21 @@ function addStockCard(symbol) {
         tbody.innerHTML = "";
         filtered.forEach((r) => {
           const row = tbody.insertRow();
-          row.insertCell().textContent = new Date(r.t).toLocaleDateString();
-          row.insertCell().textContent = `$${r.o.toFixed(2)}`;
-          row.insertCell().textContent = `$${r.c.toFixed(2)}`;
-          row.insertCell().textContent = `$${r.h.toFixed(2)}`;
-          row.insertCell().textContent = `$${r.l.toFixed(2)}`;
+          row.className = "hover:bg-slate-800/50 border-b border-slate-800/60";
+
+          const cells = [
+            new Date(r.t).toLocaleDateString(),
+            `$${r.o.toFixed(2)}`,
+            `$${r.c.toFixed(2)}`,
+            `$${r.h.toFixed(2)}`,
+            `$${r.l.toFixed(2)}`
+          ];
+
+          cells.forEach((text) => {
+            const cell = row.insertCell();
+            cell.className = "px-4 py-2.5 text-slate-200";
+            cell.textContent = text;
+          });
         });
 
         chart.data.labels = filtered.map((r) => new Date(r.t).toLocaleDateString());
@@ -412,8 +430,12 @@ function addStockCard(symbol) {
 
       timeSelector.querySelectorAll(".time-btn[data-period]").forEach((btn) => {
         btn.addEventListener("click", (e) => {
-          timeSelector.querySelectorAll(".time-btn").forEach((b) => b.classList.remove("active"));
-          e.currentTarget.classList.add("active");
+          timeSelector.querySelectorAll(".time-btn").forEach((b) => {
+            b.classList.remove("bg-white", "text-indigo-600", "shadow");
+            b.classList.add("bg-transparent", "text-slate-400", "hover:text-slate-100");
+          });
+          e.currentTarget.classList.remove("bg-transparent", "text-slate-400", "hover:text-slate-100");
+          e.currentTarget.classList.add("bg-white", "text-indigo-600", "shadow");
           renderView(e.currentTarget.dataset.period);
         });
       });
