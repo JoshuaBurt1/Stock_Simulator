@@ -3,42 +3,51 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>API Stocks</title>
-    <link href="css/styles.css" rel="stylesheet" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"
-      defer
-    ></script>
-    <!--must be before local script that uses it-->
+    <title>API Stocks Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js" defer></script>
     <script src="js/keys.js" defer></script>
     <script src="js/stock.js" defer></script>
-    <!--polygon.io documentation link: https://polygon.io/dashboard-->
-    <!--chart.js documentation link: https://www.chartjs.org/docs/latest/charts/line.html-->
   </head>
   <body>
-    <header><h1>API Stocks</h1></header>
-    <!-- Part 3: Polygon.io API, 
-    Put into table format
-    Put into chart format with chart.js
-    TO DO: find trends
-    TO DO: report on ideal buy and sell times based on historical trends
-    TO DO:
-    <h1>Portfolio</h1>
-    <div id="chart"><canvas id="portfolio" width="800" height="400"></canvas></div>
-    -->
+    <div class="app-container">
+      <header class="app-header">
+        <h1>API Stocks Dashboard</h1>
+        <p id="studentId"></p>
+      </header>
 
-    <p>
-      Press ctrl or shift when selecting to view multiple stocks, maximum of 5 API
-      requests per minute on basic plan
-    </p>
-    <label for="stockSelect2">Select Stocks </label>
-    <div>
-      <select id="stockSelect2" multiple>
-        <option value="" disabled selected>Please choose…</option>
-      </select>
+      <main class="controls-card">
+        <div class="instructions">
+          <p>
+            Search for any stock ticker or select from the <strong>Top 1000 Most Active</strong> list below, then click <strong>Add Stock</strong>.
+          </p>
+        </div>
+
+        <div class="search-bar-group">
+          <input
+            type="text"
+            id="stockSearchInput"
+            placeholder="Type stock ticker (e.g. AAPL, TSLA, NVDA)..."
+            autocomplete="off"
+          />
+          <button id="addStockBtn" class="btn btn-primary">Add Stock</button>
+          <button id="clear" class="btn btn-secondary">Clear All</button>
+        </div>
+
+        <div class="select-group">
+          <label for="stockSelect2">Top 1000 Most Active Stocks:</label>
+          <select id="stockSelect2" size="6">
+            <option value="" disabled>Loading market snapshot data...</option>
+          </select>
+        </div>
+      </main>
+
+      <!-- Dynamic Stock Cards Container -->
+      <section id="resultsContainer" class="results-grid"></section>
     </div>
-
-    <button id="view">View Data</button>
-    <button id="clear">Clear</button>
   </body>
 </html>
