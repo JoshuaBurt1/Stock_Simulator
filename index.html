@@ -3,33 +3,145 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>API Stocks Dashboard</title>
+    <title>StockViewer & Paper Trading Simulator</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <!-- Custom Scrollbar Styles -->
     <link rel="stylesheet" href="css/styles.css" />
-    <!-- External Scripts -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js" defer></script>
     <script src="js/keys.js" defer></script>
-    <script src="js/stock.js" defer></script>
+    <script src="js/components.js" defer></script>
+    <script src="js/app.js" defer></script>
   </head>
-  <body class="bg-slate-900 text-slate-100 font-['Inter',sans-serif] min-h-screen p-4 md:p-8">
-    <div class="max-w-[1400px] mx-auto flex flex-col gap-8">
-      <!-- Header -->
-      <header class="text-center py-4">
-        <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">API Stocks Dashboard</h1>
-        <p id="studentId" class="text-slate-400 text-sm mt-1"></p>
-      </header>
+  <body class="bg-slate-900 text-slate-100 font-['Inter',sans-serif] min-h-screen flex flex-col justify-between">
+    
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 shadow-lg">
+      <div class="max-w-[1400px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-indigo-600 text-white p-2 rounded-lg font-bold text-xl tracking-wider">
+            SV
+          </div>
+          <div>
+            <a href="index.html" class="text-xl font-bold text-white hover:text-indigo-400 transition-colors">
+              StockViewer
+            </a>
+            <p id="studentId" class="text-slate-400 text-xs"></p>
+          </div>
+        </div>
+      </div>
+    </header>
 
-      <!-- Controls Card -->
-      <main class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl flex flex-col gap-5">
-        <div class="text-slate-400 text-sm">
-          <p>
-            Search for any stock ticker or select from the <strong class="text-indigo-400 font-semibold">Top 1000 Most Active</strong> list below, then click <strong class="text-indigo-400 font-semibold">Add Stock</strong>.
+    <main class="max-w-[1400px] mx-auto w-full px-4 py-8 flex-1 flex flex-col gap-8">
+      
+      <!-- SECTION 1: SIMULATOR PORTFOLIO METRICS -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-xl">
+          <p class="text-xs uppercase font-semibold text-slate-400 tracking-wider">Cash Balance</p>
+          <p id="cashBalance" class="text-3xl font-bold text-emerald-400 mt-2">$100,000.00</p>
+        </div>
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-xl">
+          <p class="text-xs uppercase font-semibold text-slate-400 tracking-wider">Portfolio Value</p>
+          <p id="portfolioValue" class="text-3xl font-bold text-white mt-2">$0.00</p>
+        </div>
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-xl">
+          <p class="text-xs uppercase font-semibold text-slate-400 tracking-wider">Net Worth</p>
+          <p id="netWorth" class="text-3xl font-bold text-indigo-400 mt-2">$100,000.00</p>
+        </div>
+      </section>
+
+      <!-- SECTION 2: SIMULATOR TRADE FORM & HOLDINGS -->
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Execute Trade Panel -->
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl flex flex-col gap-4">
+          <h2 class="text-xl font-bold text-white border-b border-slate-700 pb-3 flex items-center justify-between">
+            <span>Execute Trade</span>
+            <span class="text-xs font-normal text-slate-400">Paper Simulator</span>
+          </h2>
+          <form id="tradeForm" class="flex flex-col gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Ticker Symbol</label>
+              <input 
+                type="text" 
+                id="simTicker" 
+                placeholder="e.g. AAPL, TSLA" 
+                required 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white outline-none focus:border-indigo-500 uppercase text-sm" 
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Quantity (Shares)</label>
+              <input 
+                type="number" 
+                id="simShares" 
+                min="1" 
+                step="1" 
+                required 
+                placeholder="Number of shares" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white outline-none focus:border-indigo-500 text-sm" 
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Trade Date (Backtest)</label>
+              <input 
+                type="date" 
+                id="simDate" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white outline-none focus:border-indigo-500 text-sm [color-scheme:dark]" 
+              />
+              <p class="text-[10px] text-slate-400 mt-1">Leave blank to use latest price</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Action</label>
+              <select id="simAction" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white outline-none focus:border-indigo-500 text-sm">
+                <option value="BUY">BUY</option>
+                <option value="SELL">SELL</option>
+              </select>
+            </div>
+            <button type="submit" id="executeTradeBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-all shadow-sm mt-1">
+              Submit Order
+            </button>
+          </form>
+          <p id="tradeStatus" class="text-xs text-slate-400 min-h-[16px]"></p>
+        </div>
+
+        <!-- Current Portfolio Holdings Table -->
+        <div class="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl flex flex-col gap-4">
+          <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+            <h2 class="text-xl font-bold text-white">Current Portfolio Holdings</h2>
+            <button id="resetSimBtn" class="text-xs bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg border border-red-600/40 transition-all cursor-pointer">
+              Reset Portfolio
+            </button>
+          </div>
+          <div class="overflow-x-auto max-h-[260px]">
+            <table class="w-full text-left text-sm border-collapse">
+              <thead class="sticky top-0 bg-slate-900 text-slate-400 font-semibold uppercase text-xs border-b border-slate-700 z-10">
+                <tr>
+                  <th class="p-3">Ticker</th>
+                  <th class="p-3">Shares</th>
+                  <th class="p-3">Avg Cost</th>
+                  <th class="p-3">Current Price</th>
+                  <th class="p-3">Total Value</th>
+                </tr>
+              </thead>
+              <tbody id="holdingsTableBody">
+                <tr><td colspan="5" class="p-4 text-center text-slate-500">No stock holdings in portfolio.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: STOCK MARKET SEARCH & HISTORICAL CHARTING -->
+      <section class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl flex flex-col gap-5">
+        <div>
+          <h2 class="text-xl font-bold text-white mb-1">Market Explorer & Historical Charts</h2>
+          <p class="text-slate-400 text-sm">
+            Search for any stock ticker or select from the <strong class="text-indigo-400 font-semibold">Top 1000 Most Active</strong> list below to inspect price trends before adding to your portfolio.
           </p>
         </div>
 
@@ -41,24 +153,31 @@
             autocomplete="off"
             class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none focus:border-indigo-500 transition-colors text-sm md:text-base"
           />
-          <button id="addStockBtn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold rounded-lg text-sm transition-all shadow-sm">
-            Add Stock
+          <button id="addStockBtn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold rounded-lg text-sm transition-all shadow-sm cursor-pointer">
+            View Stock Chart
           </button>
-          <button id="clear" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-semibold rounded-lg text-sm transition-all shadow-sm">
-            Clear All
+          <button id="clear" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-semibold rounded-lg text-sm transition-all shadow-sm cursor-pointer">
+            Clear Charts
           </button>
         </div>
 
         <div class="flex flex-col gap-2">
           <label for="stockSelect2" class="font-semibold text-sm text-slate-200">Top 1000 Most Active Stocks:</label>
-          <select id="stockSelect2" size="6" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-sm outline-none focus:border-indigo-500 transition-colors">
+          <select id="stockSelect2" size="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-sm outline-none focus:border-indigo-500 transition-colors">
             <option value="" disabled class="p-2">Loading market snapshot data...</option>
           </select>
         </div>
-      </main>
+      </section>
 
       <!-- Dynamic Stock Cards Container -->
       <section id="resultsContainer" class="flex flex-col gap-8"></section>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 mt-12 py-6 text-center text-slate-400 text-sm">
+      <div class="max-w-[1400px] mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <p>&copy; 2026 API Stocks Dashboard &bull; Built with Tailwind CSS &amp; Polygon API</p>
+      </div>
+    </footer>
   </body>
 </html>
