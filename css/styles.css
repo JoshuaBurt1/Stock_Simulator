@@ -1,86 +1,388 @@
-@charset "utf-8";
+/* ==========================================================================
+   Global Variables & Reset
+   ========================================================================== */
+:root {
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --secondary: #334155;
+  --secondary-hover: #475569;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --accent-green: #10b981;
+  --radius: 12px;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: sans-serif;
-  font-size: 150%;
-  line-height: 1.4;
-  margin-left: 50px;
-}
-header p {
-  font-size: 1.3rem;
-  font-weight: bold;
-  text-align: center;
+  font-family: var(--font);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.5;
+  min-height: 100vh;
+  padding: 2rem 1rem;
 }
 
-/* section styles */
-section {
-  display: grid;
-  grid-template-rows: repeat(4, auto);
-  grid-template-columns: repeat(3, 700px);
-  grid-gap: 25px 1px;
-  justify-content: space-between;
-  margin-bottom: 5rem;
-}
-/*creates evenly sized articles*/
-section > * {
-  flex: 0 0 auto;
-}
-section article {
-  border: 1px solid black;
-  box-shadow: 0 2px 14px grey;
-  padding: 1.5%;
-}
-article img {
-  margin: auto;
-  display: block;
-  height: 40%;
-}
-section p {
-  margin: 5px 0;
-}
-
-section ul {
-  margin-top: 0;
-}
-
-html {
-  line-height: 1.15; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
-  background-image: url("images/stocks.jpg");
-  background-size: cover;
-  font-size: 12px;
-}
-label {
-  font-family: "Times New Roman", Times, serif;
-}
-p {
-  color: black;
-}
-
-h1 {
-  text-align: center;
-  font-size: 2.5rem;
-  color: black;
-}
-tr {
-  font-size: small;
-}
-th {
-  font-weight: 8;
-}
-
-#format {
+.app-container {
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
-  height: 400px;
-}
-#table {
-  overflow-y: scroll;
-}
-#tables {
-  background-color: rgba(255, 255, 255, 0.5);
+  flex-direction: column;
+  gap: 2rem;
 }
 
-#portfolio {
-  width: 800px;
-  height: 500px;
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.app-header {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.app-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
+
+.app-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+/* ==========================================================================
+   Controls Card & Search Bar
+   ========================================================================== */
+.controls-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.instructions p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.instructions strong {
+  color: var(--primary);
+}
+
+.search-bar-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.search-bar-group input[type="text"] {
+  flex: 1;
+  background-color: #0f172a;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--text-main);
+  padding: 0.75rem 1rem;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-bar-group input[type="text"]:focus {
+  border-color: var(--primary);
+}
+
+.select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.select-group label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+select#stockSelect2 {
+  width: 100%;
+  background-color: #0f172a;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--text-main);
+  padding: 0.5rem;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+select#stockSelect2:focus {
+  border-color: var(--primary);
+}
+
+select#stockSelect2 option {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+
+select#stockSelect2 option:hover,
+select#stockSelect2 option:checked {
+  background-color: var(--primary) !important;
+  color: #fff;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+}
+
+/* ==========================================================================
+   Dynamic Results Section & Stock Cards
+   ========================================================================== */
+.results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.stock-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
+}
+
+/* Card Header with Ticker Title + Controls + "X" Delete Icon */
+.stock-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 0.75rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stock-card-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* "X" Delete Card Button */
+.delete-card-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.delete-card-btn:hover {
+  color: #ffffff;
+  background-color: var(--danger);
+  border-color: var(--danger);
+}
+
+.delete-card-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Time Selector Bar */
+.time-frame-selector {
+  display: inline-flex;
+  align-items: center;
+  background-color: #0f172a;
+  border: 1px solid var(--card-border);
+  border-radius: 9999px;
+  padding: 4px;
+  gap: 2px;
+}
+
+.time-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.time-btn:hover {
+  color: var(--text-main);
+}
+
+.time-btn.active {
+  background-color: #ffffff;
+  color: #4f46e5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.time-divider {
+  width: 1px;
+  height: 16px;
+  background-color: var(--card-border);
+  margin: 0 4px;
+}
+
+.time-btn.icon-btn {
+  padding: 0.4rem;
+}
+
+.time-btn.icon-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Card Body Layout */
+.stock-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 992px) {
+  .stock-card-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Table Styling */
+.table-wrapper {
+  max-height: 380px;
+  overflow-y: auto;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background-color: #0f172a;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 3px;
+}
+
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.stock-table th {
+  position: sticky;
+  top: 0;
+  background-color: #1e293b;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--card-border);
+  z-index: 1;
+}
+
+.stock-table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.stock-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Chart Container */
+.chart-wrapper {
+  position: relative;
+  height: 380px;
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 1rem;
 }
