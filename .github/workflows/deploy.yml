@@ -1,32 +1,27 @@
-name: Deploy to GitHub Pages
+name: Deploy Pages with API Key Secret
 
 on:
   push:
-    branches:
-      - main  # Trigger deployment on push to the main branch
-
-permissions:
-  contents: write  # Ensure the action has permission to write to the repository
+    branches: ["main"]
 
 jobs:
   deploy:
-    concurrency: ci-${{ github.ref }} # Avoid overlapping deployments
-
-    runs-on: ubuntu-latest  # Run the job on the latest Ubuntu environment
-
+    runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout repository
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Step 2: Inject the API key into stock.js
-      - name: Inject API key into stock.js
+      - name: Inject Secret into JS
         run: |
-          echo "Injecting API key into stock.js"
-          sed -i 's|<API_KEY_PLACEHOLDER>|${{ secrets.API_KEY }}|g' js/stock.js
+          sed -i 's/${API_KEY}/${{ secrets.API_KEY }}/g' js/stock.js
 
-      # Step 3: Deploy to GitHub Pages using the latest stable version of `github-pages-deploy-action`
-      - name: Deploy to GitHub Pages 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          folder: .  # Deploy the root folder, which contains index.html, stock.js, etc.
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
