@@ -26,7 +26,7 @@ let chartMap = new Map();
 let cardCounter = 0;
 
 // Fetch Top 1000 Most Active Stocks snapshot
-const apiUrlSP = `https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/${snapshotDateStr}?adjusted=true&apiKey=${apiKey}`;
+const apiUrlSP = `https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/${snapshotDateStr}?adjusted=true&apiKey=${API_KEY}`;
 
 fetch(apiUrlSP)
   .then((response) => {
@@ -303,7 +303,7 @@ function addStockCard(symbol) {
   chartMap.set(cardId, { chart: null, cardElement: stockCard });
 
   // Fetch Full Historical Data
-  const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2020-01-01/${formattedDate}?apiKey=${apiKey}`;
+  const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/2020-01-01/${formattedDate}?apiKey=${API_KEY}`;
 
   fetch(apiUrl)
     .then((response) => response.json())
